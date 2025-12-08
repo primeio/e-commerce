@@ -3,91 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>User Management</title>
-  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body class="container mt-4">
+<body>
 
-<h2 class="mb-3">User Management</h2>
+<header>
+  <div th:replace="fragments:: adminHeader"></div>
+</header>
 
-<a href="/admin/users/add" class="btn btn-primary mb-3">Add User</a>
+<div class="container">
+  <h2>User Management</h2>
 
-<table class="table table-bordered table-striped text-center">
-  <thead class="table-dark">
-  <tr>
-    <th>ID</th>
-    <th>Full Name</th>
-    <th>Email</th>
-    <th>Username</th>
-    <th>Phone</th>
-    <th>Status</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
+  <a href="/admin/users/add" class="btn btn-primary">Add User</a>
 
-  <tbody>
-  <tr th:each="user : ${users}">
-    <td th:text="${user.id}"></td>
-    <td th:text="${user.fullName}"></td>
-    <td th:text="${user.email}"></td>
-    <td th:text="${user.username}"></td>
-    <td th:text="${user.phoneNumber}"></td>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Username</th>
+      <th>Phone</th>
 
-    <!-- STATUS BADGES -->
-    <td>
-            <span th:if="${user.status == 'ACTIVE'}"
-                  class="badge bg-success">ACTIVE</span>
+      <th>Actions</th>
+    </tr>
+    </thead>
 
-      <span th:if="${user.status == 'BLOCKED'}"
-            class="badge bg-warning text-dark">BLOCKED</span>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}"></td>
+      <td th:text="${user.fullName}"></td>
+      <td th:text="${user.email}"></td>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.phoneNumber}"></td>
 
-      <span th:if="${user.status == 'DELETED'}"
-            class="badge bg-danger">DELETED</span>
-    </td>
+      <!-- STATUS BADGES -->
 
-    <!-- ACTION BUTTONS -->
-    <td>
-      <!-- Edit button visible only if not deleted -->
-      <a th:if="${user.status != 'DELETED'}"
-         th:href="@{'/admin/users/edit/' + ${user.id}}"
-         class="btn btn-warning btn-sm">Edit</a>
 
-      <!-- Delete (soft delete) -->
-      <a th:if="${user.status == 'ACTIVE'}"
-         th:href="@{'/admin/users/delete/' + ${user.id}}"
-         class="btn btn-danger btn-sm"
-         onclick="return confirm('Are you sure you want to delete this user?');">
-        Delete
-      </a>
+      <!-- ACTION BUTTONS -->
+      <td class="actions">
 
-      <!-- Block user -->
-      <a th:if="${user.status == 'ACTIVE'}"
-         th:href="@{'/admin/users/block/' + ${user.id}}"
-         class="btn btn-secondary btn-sm">
-        Block
-      </a>
+        <a th:href="@{'/admin/users/edit/' + ${user.id}}"
+           class="btn btn-edit btn-small">Edit</a>
 
-      <!-- Unblock user -->
-      <a th:if="${user.status == 'BLOCKED'}"
-         th:href="@{'/admin/users/unblock/' + ${user.id}}"
-         class="btn btn-success btn-sm">
-        Unblock
-      </a>
+        <a th:if="${user.status != 'BLOCKED'}"
+           th:href="@{'/admin/users/delete/' + ${user.id}}"
+           class="btn btn-block btn-small">Delete</a>
 
-      <!-- Restore deleted user -->
-      <a th:if="${user.status == 'DELETED'}"
-         th:href="@{'/admin/users/restore/' + ${user.id}}"
-         class="btn btn-success btn-sm">
-        Restore
-      </a>
-    </td>
-  </tr>
 
-  <tr th:if="${users.size()} == 0">
-    <td colspan="7" class="text-muted">No users found</td>
-  </tr>
-  </tbody>
-</table>
+
+      </td>
+    </tr>
+
+    <tr th:if="${users.size()} == 0">
+      <td colspan="7" class="text-muted">No users found</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer th:replace="fragments::footer"></footer>
 
 </body>
 </html>

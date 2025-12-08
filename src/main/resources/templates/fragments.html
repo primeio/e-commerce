@@ -36,10 +36,10 @@
             <input type="hidden" name="page" value="0">
         </form>
         <nav class="nav-right">
-            <span>
-                <a sec:authorize="isAnonymous()" href="/login">Login</a>
-                <a sec:authorize="isAuthenticated()" href="/profile">Profile</a>
-            </span>
+            <a sec:authorize="isAnonymous()" href="/login">Login</a>
+
+            <a sec:authorize="isAuthenticated()" href="/profile">Profile</a>
+
 
             <a th:href="@{/orders}">Orders</a>
             <a th:href="@{/cart}">Cart</a>
