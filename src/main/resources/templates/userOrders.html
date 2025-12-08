@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Order list wrapper */
+.order-list {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* Order Card */
+.order-details {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect */
+.order-details:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* Order Image */
+.order-details img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e2e2e2;
+}
+
+/* Order Info Container */
+.order-info {
+    flex: 1;
+}
+
+/* Labels */
+.order-info p {
+    margin: 6px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.order-info strong {
+    color: #000;
+}
+
+/* Order Heading */
+.order-details h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 600px) {
+    .order-details {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .order-details img {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+    }
+
+    .order-info {
+        text-align: center;
+    }
+}
+
+    </style>
+</head>
+<body>
+<header>
+    <div th:replace="fragments :: userHeader"></div>
+
+</header>
+<div class="order-list" th:each="order : ${orders}">
+    <div th:each="item : ${order.orderItems}" class="order-details">
+        <h3>Order ID: <span th:text="${order.id}"></span></h3>
+
+        <img th:src="@{${item.product.imageUrl}}" alt="Product Image">
+
+        <div class="order-info">
+            <p><strong>Product Name:</strong> <span th:text="${item.product.name}"></span></p>
+            <p><strong>Quantity:</strong> <span th:text="${item.quantity}"></span></p>
+            <p><strong>Total Price:</strong> <span th:text="${item.totalPrice != null ?
+            item.totalPrice : (item.product.price * item.quantity)}"></span></p>
+            <p><strong>Order Status:</strong><span th:text="${order.status}"></span></p>
+        </div>
+    </div>
+</div>
+
+
+<footer th:replace="fragments::footer">
+
+</footer>
+
+
+
+</body>
+</html>

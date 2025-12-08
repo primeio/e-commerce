@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ShopNow</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>/* SEARCH BAR */
+
+
+/* PRODUCT GRID */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+}
+.btn-view{
+    padding: 8px 12px;
+    background: #0066ff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sort-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin: 20px 0;
+}
+
+.sort-controls a {
+    padding: 8px 14px;
+    background: #eee;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.sort-controls a:hover {
+    background: #ccc;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.pagination a {
+    padding: 8px 12px;
+    background: #eee;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background: #0066ff;
+    color: white;
+}
+
+.pagination a.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div th:replace="fragments :: userHeader"></div>
+    <div th:replace="fragments::categories"></div>
+</header>
+<main>
+<section class="main-container">
+    <!-- Carousel (Bootstrap) - keep if you want; otherwise can be removed -->
+    <div id="ecommerceCarousel" class="carousel slide" data-bs-ride="carousel" aria-label="Promotional carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img th:src="@{/images/image1.png}" alt="New arrivals banner">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/images/image2.png}" alt="Big discounts banner">
+            </div>
+            <div class="carousel-item">
+                <img th:src="@{/images/image4.png}" alt="Trending products banner">
+            </div>
+        </div>
+
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#ecommerceCarousel" data-bs-slide="prev" aria-label="Previous slide">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#ecommerceCarousel" data-bs-slide="next" aria-label="Next slide">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+<!--    <section id="productList" th:fragment="productList">-->
+
+        <div class="main-container">  <!-- ⭐ FIXED WRAPPER -->
+
+            <div class="product-grid">
+                <div class="product-card" th:each="product : ${products}">
+                    <img th:src="@{${product.imageUrl}}" alt="Product Image">
+                    <h3 th:text="${product.name}"></h3>
+                    <p>₹<span th:text="${product.price}"></span></p>
+                    <p><a class="btn-view"
+                          th:href="@{/products/{id}(id=${product.id})}">
+                        View Product
+                    </a></p>
+                </div>
+            </div>
+
+            <!-- SORT BUTTONS -->
+            <div class="sort-controls">
+                <a th:href="@{/user/dashboard(page=${currentPage}, size=10, sortField='price', sortDir=${reverseSortDir}, keyword=${keyword})}">
+                    Sort by Price ↑↓
+                </a>
+                <a th:href="@{/user/dashboard(page=${currentPage}, size=10, sortField='name', sortDir=${reverseSortDir}, keyword=${keyword})}">
+                    Sort by Name ↑↓
+                </a>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <!-- Prev -->
+                <a th:classappend="${currentPage == 0} ? 'disabled'"
+                   th:href="@{/user/dashboard(page=${currentPage-1}, size=10, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">
+                    Previous
+                </a>
+
+                <!-- Page numbers -->
+                <a th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                   th:classappend="${i == currentPage} ? 'active'"
+                   th:text="${i+1}"
+                   th:href="@{/user/dashboard(page=${i}, size=10, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">
+                </a>
+
+                <!-- Next -->
+                <a th:classappend="${currentPage == totalPages-1} ? 'disabled'"
+                   th:href="@{/user/dashboard(page=${currentPage+1}, size=10, sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">
+                    Next
+                </a>
+            </div>
+
+        </div> <!-- END FIX -->
+
+    </section>
+
+</main>
+
+
+<!-- Footer -->
+<footer th:replace="fragments :: footer"></footer>
+
+<!-- Bootstrap JS (for carousel controls) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

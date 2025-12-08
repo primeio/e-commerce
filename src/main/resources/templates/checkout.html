@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ShopNow — Checkout</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>
+    :root{
+      --max-w:1200px;
+      --bg:#f4f6f9;
+      --panel:#fff;
+      --accent:#007BFF;
+      --ok:#28a745;
+      --muted:#666;
+      --card-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      --radius:10px;
+      --gap:12px;
+    }
+
+
+
+    .cat-nav{max-width:var(--max-w);width:92%;margin:10px auto;background:aliceblue;padding:8px 10px;border-radius:8px}
+    .nav-links{display:flex;gap:12px;overflow-x:auto;flex-wrap:nowrap;padding:4px 2px}
+    .nav-links a{white-space:nowrap;display:inline-block;padding:8px 12px;border-radius:6px;font-weight:500;color:#000}
+    .nav-links a:hover{color:var(--accent);background:rgba(0,123,255,0.06)}
+
+    /* main */
+    .main-container{max-width:var(--max-w);width:92%;margin:30px auto;display:grid;grid-template-columns:2fr 1fr;gap:20px}
+    .panel{background:var(--panel);padding:18px;border-radius:var(--radius);box-shadow:var(--card-shadow)}
+    .section-title{font-size:1.1rem;margin-bottom:12px;font-weight:700;color:#222}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .form-row .full{grid-column:1 / -1}
+    label{display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:.95rem}
+    .form-control{width:100%;padding:8px 10px;border-radius:6px;border:1px solid #ddd;font-size:.95rem;background:#fff}
+
+    /* payment */
+    .payments{display:flex;gap:18px;align-items:center;margin-bottom:12px}
+    input[type="radio"].payment-toggle{margin-right:8px;vertical-align:middle}
+
+    /* summary */
+    .order-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0}
+    .order-item img{width:64px;height:64px;object-fit:cover;border-radius:6px;background:#efefef;display:block}
+    .summary-box{text-align:left}
+    .summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee}
+    .total-row{font-size:1.05rem;font-weight:700}
+    .place-order{width:100%;background:var(--ok);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer}
+
+
+
+    @media (max-width:992px){
+      .main-container{grid-template-columns:1fr}
+      .form-row{grid-template-columns:1fr}
+    }
+
+    .muted{color:var(--muted);font-size:.95rem}
+    .btn-outline{border:1px solid #cfcfcf;padding:8px 12px;border-radius:6px;display:inline-block}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div th:replace="fragments :: userHeader"></div>
+
+
+</header>
+
+<!-- MAIN -->
+<main class="main-container" role="main">
+
+  <!-- LEFT: Shipping + Payment -->
+  <section class="panel" aria-labelledby="shippingTitle">
+    <h2 id="shippingTitle" class="section-title">Shipping Details</h2>
+
+    <!-- Note: CSRF intentionally omitted (disabled) -->
+    <form th:action="@{/orders/place}" method="post" autocomplete="on" novalidate>
+
+      <div class="form-row">
+        <div>
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" class="form-control"
+                 th:value="${user != null ? user.fullName : ''}" required>
+        </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" class="form-control"
+                 th:value="${user != null ? user.email : ''}" required>
+        </div>
+
+        <div class="full">
+          <label for="shippingAddress">Shipping address</label>
+          <!-- controller expects param shippingAddress — supply it here (prefilled with user's address) -->
+          <input id="shippingAddress" name="shippingAddress" type="text" class="form-control"
+                 th:value="${user != null ? user.address : ''}" required>
+        </div>
+
+        <div>
+          <label for="phoneNumber">Phone</label>
+          <input id="phoneNumber" name="phoneNumber" type="tel" class="form-control"
+                 th:value="${user != null ? user.phoneNumber : ''}" required>
+        </div>
+
+        <div>
+          <label for="city">City</label>
+          <input id="city" name="city" type="text" class="form-control"
+                 th:value="${user != null ? user.city : ''}">
+        </div>
+
+        <div>
+          <label for="state">State</label>
+          <input id="state" name="state" type="text" class="form-control"
+                 th:value="${user != null ? user.state : ''}">
+        </div>
+
+        <div>
+          <label for="pinCode">Pincode</label>
+          <input id="pinCode" name="pinCode" type="text" class="form-control"
+                 th:value="${user != null ? user.pinCode : ''}">
+        </div>
+
+        <div class="full">
+          <label for="note">Order note (optional)</label>
+          <input id="note" name="note" type="text" class="form-control" placeholder="Leave a note for delivery">
+        </div>
+      </div>
+
+      <hr style="margin:16px 0;border:none;border-top:1px solid #eee">
+
+      <h3 class="section-title">Payment Method</h3>
+
+      <!-- controller expects param paymentMethod -->
+      <div class="payments" role="radiogroup" aria-label="Payment methods">
+        <label style="font-weight:600">
+          <input class="payment-toggle" type="radio" name="paymentMethod" value="CASH_ON_DELIVERY" checked>
+          &nbsp; Cash on Delivery
+        </label>
+
+        <label style="font-weight:600">
+          <input class="payment-toggle" type="radio" name="paymentMethod" value="ONLINE_PAYMENT">
+          &nbsp; Online Payment
+        </label>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="submit" class="place-order">Place Order</button>
+        <a th:href="@{/cart}" class="btn-outline">Back to Cart</a>
+      </div>
+    </form>
+  </section>
+
+  <!-- RIGHT: Order Summary -->
+  <aside class="panel" aria-labelledby="summaryTitle">
+    <h2 id="summaryTitle" class="section-title">Order Summary</h2>
+
+    <div th:if="${#lists.isEmpty(cartItems)}">
+      <p class="muted">Your cart is empty.</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(cartItems)}">
+      <div th:each="item : ${cartItems}" class="order-item">
+        <img th:src="@{${item.product.imageUrl}}" alt="Product image" th:if="${item.product.imageUrl != null}"
+             onerror="this.style.display='none'">
+        <div style="flex:1">
+          <div style="font-weight:600" th:text="${item.product.name}">Product name</div>
+          <div class="muted" style="font-size:.92rem">Qty: <span th:text="${item.quantity}">1</span></div>
+        </div>
+        <div style="font-weight:700">Rs. <span th:text="${item.totalPrice != null ? item.totalPrice : (item.product.price * item.quantity)}">0</span></div>
+      </div>
+
+      <div style="margin-top:12px" class="summary-box">
+        <div class="summary-row">
+          <div>Subtotal</div>
+          <div>Rs. <span th:text="${totalPrice != null ? totalPrice : 0}">0</span></div>
+        </div>
+
+        <div class="summary-row">
+          <div>Shipping</div>
+          <div th:text="${shippingFee != null ? 'Rs. ' + shippingFee : 'Free'}">Free</div>
+        </div>
+
+        <div class="summary-row total-row">
+          <div>Total</div>
+          <div>Rs. <span th:text="${totalPrice != null ? totalPrice : 0}">0</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- FOOTER -->
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

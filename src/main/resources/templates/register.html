@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Create account - My App</title>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* ISOLATED REGISTER PAGE STYLING */
+
+        :root {
+            --reg-bg: #f4f6f9;
+            --reg-card-bg: #ffffff;
+            --reg-accent: #0f172a;
+            --reg-primary: #7C3AED;
+            --reg-muted: #6b7280;
+            --reg-radius: 12px;
+            --reg-shadow: 0 10px 30px rgba(15,23,42,0.08);
+        }
+
+        body.register-page {
+            margin: 0;
+            padding: 0;
+            background: var(--reg-bg);
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+        }
+
+        /* Wrapper matching the site layout */
+        .reg-wrapper {
+            max-width: 1200px;
+            width: 92%;
+            margin: 120px auto 40px; /* space from header */
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Registration card */
+        .reg-card {
+            width: 100%;
+            max-width: 700px;
+            background: var(--reg-card-bg);
+            border-radius: var(--reg-radius);
+            box-shadow: var(--reg-shadow);
+            padding: 1.8rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .reg-branding { padding: .5rem; }
+
+        .reg-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#fff8,#ffffff33);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: var(--reg-primary);
+        }
+
+        .reg-title { margin: 0; font-size: 1.3rem; color: #111; }
+        .reg-lead { margin: .35rem 0; color: var(--reg-muted); }
+
+        form.reg-form { display: grid; gap: .75rem; }
+
+        .reg-input {
+            padding: .7rem .9rem;
+            border-radius: 10px;
+            border: 1px solid #eef2f7;
+            font-size: 1rem;
+            background: #fff;
+            outline: none;
+        }
+
+        .reg-input:focus {
+            border-color: var(--reg-primary);
+            box-shadow: 0 8px 20px rgba(124,58,237,0.08);
+        }
+
+        .reg-row { display: flex; gap: .6rem; }
+        .reg-col { flex: 1; }
+
+        .reg-small { font-size: .9rem; color: var(--reg-muted); }
+
+        .reg-btn {
+            background: var(--reg-primary);
+            color: #fff;
+            border: none;
+            padding: .75rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: .5rem;
+        }
+
+        .reg-muted-link {
+            color: var(--reg-muted);
+            text-decoration: none;
+            font-size: .92rem;
+        }
+
+        .reg-error {
+            color: #dc2626;
+            font-size: .9rem;
+        }
+
+        @media (max-width:720px) {
+            .reg-card { grid-template-columns: 1fr; padding: 1.2rem; }
+        }
+    </style>
+</head>
+
+<body class="register-page">
+
+<header>
+    <div th:replace="fragments :: userHeader"></div>
+
+</header>
+
+<!-- Positioned correctly inside your layout -->
+<div class="reg-wrapper">
+
+    <main class="reg-card">
+
+        <!-- LEFT SIDE TEXT / BRANDING -->
+        <section class="reg-branding">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+                <div class="reg-logo">M</div>
+
+                <div>
+                    <h1 class="reg-title">Create your account</h1>
+                    <p class="reg-lead">Join us — it only takes a minute.</p>
+                </div>
+            </div>
+
+            <p class="reg-small">
+                By creating an account, you agree to our
+                <a th:href="@{/terms}" class="reg-muted-link">Terms</a>
+                and
+                <a th:href="@{/privacy}" class="reg-muted-link">Privacy Policy</a>.
+            </p>
+        </section>
+
+        <!-- RIGHT SIDE FORM -->
+        <section>
+            <form th:action="@{/register}"
+                  th:method="post"
+                  th:object="${user}"
+                  id="registerForm"
+                  class="reg-form"
+                  novalidate>
+
+                <div class="reg-row">
+                    <div class="reg-col">
+                        <label class="reg-small">Full Name</label>
+                        <input class="reg-input"
+                               th:field="*{fullName}"
+                               type="text"
+                               placeholder="John Doe"
+                               required />
+                    </div>
+
+                    <div class="reg-col">
+                        <label class="reg-small">Username</label>
+                        <input class="reg-input"
+                               th:field="*{username}"
+                               type="text"
+                               placeholder="johndoe"
+                               required />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="reg-small">Email</label>
+                    <input class="reg-input"
+                           th:field="*{email}"
+                           type="email"
+                           placeholder="you@example.com"
+                           required />
+                </div>
+
+                <div>
+                    <label class="reg-small">Phone</label>
+                    <input class="reg-input"
+                           th:field="*{phoneNumber}"
+                           type="tel"
+                           placeholder="+91 98765 43210" />
+                </div>
+
+                <div class="reg-row">
+                    <div class="reg-col">
+                        <label class="reg-small">Password</label>
+
+                        <div style="position:relative">
+                            <input class="reg-input"
+                                   id="password"
+                                   th:field="*{password}"
+                                   type="password"
+                                   placeholder="Create password"
+                                   required />
+
+                            <button type="button"
+                                    id="togglePwd"
+                                    style="position:absolute;right:8px;top:50%;transform:translateY(-50%);
+                                           background:none;border:none;color:var(--reg-muted);cursor:pointer;">
+                                Show
+                            </button>
+                        </div>
+
+                        <div class="reg-small">Use at least 8 characters.</div>
+                    </div>
+
+                    <div class="reg-col">
+                        <label class="reg-small">Confirm Password</label>
+                        <input class="reg-input"
+                               id="confirm"
+                               type="password"
+                               placeholder="Repeat password"
+                               required />
+                    </div>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:.5rem;margin-top:.25rem">
+                    <input id="terms" type="checkbox" />
+                    <label for="terms" class="reg-small">
+                        I agree to the <a th:href="@{/terms}" class="reg-muted-link">terms</a>
+                    </label>
+                </div>
+
+                <div th:if="${param.error}">
+                    <p class="reg-error">There was an error processing your registration.</p>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.5rem">
+                    <button type="submit" class="reg-btn">Create account</button>
+                    <a th:href="@{/login}" class="reg-muted-link">Already have an account?</a>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+
+<script>
+    (function(){
+        const pwd = document.getElementById('password');
+        const toggle = document.getElementById('togglePwd');
+        const confirmPwd = document.getElementById('confirm');
+        const form = document.getElementById('registerForm');
+
+        toggle.addEventListener('click', ()=>{
+            if(pwd.type === 'password'){
+                pwd.type='text';
+                toggle.textContent='Hide';
+            } else {
+                pwd.type='password';
+                toggle.textContent='Show';
+            }
+        });
+
+        form.addEventListener('submit', (e)=>{
+            const errors = [];
+            if(pwd.value.length < 8) errors.push("Password must be at least 8 characters");
+            if(pwd.value !== confirmPwd.value) errors.push("Passwords do not match");
+            if(!document.getElementById('terms').checked) errors.push("You must accept the terms");
+
+            if(errors.length){
+                e.preventDefault();
+                alert(errors.join("\n"));
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>

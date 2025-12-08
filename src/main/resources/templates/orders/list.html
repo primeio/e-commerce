@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Orders</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+
+        /* Page heading */
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #4B0082; /* deep purple */
+            text-align: center;
+        }
+
+        /* Table wrapper to prevent header/body mismatch */
+        .table-container {
+    width: 100%;
+    max-width: 1200px;   /* ⭐ MAX size of table */
+    margin: auto;        /* center the table */
+    overflow-x: auto;
+}
+
+        /* Table */
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px; /* keeps the table stable on zoom */
+        }
+
+        /* Table header */
+        .order-table thead {
+            background: linear-gradient(135deg, #5A4FCF, #7A6FF5);
+            color: #fff;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 12px 15px;
+            border: 1px solid #e2e2e2;
+            text-align: center;
+            vertical-align: top;
+            font-size: 15px;
+        }
+
+        /* Zebra rows */
+        .order-table tr:nth-child(even) {
+            background: #f7f7ff;
+        }
+
+        /* UL inside table cells */
+        ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        /* Status form */
+        .status-form {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .status-form select {
+            padding: 7px;
+            border-radius: 6px;
+            border: 1px solid #888;
+            background: #fff;
+        }
+
+        .status-form button {
+            padding: 7px 14px;
+            background: #4B6EF5;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .status-form button:hover {
+            background: #2f4fd8;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div th:replace="fragments :: adminHeader"></div>
+</header>
+
+<main class="container">
+
+    <h2>All Orders</h2>
+
+    <!-- Responsive table wrapper -->
+    <div class="table-container">
+
+        <table class="order-table">
+
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Total Amount</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Change Status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="order : ${orders}">
+
+                <td th:text="${order.id}"></td>
+
+                <td>
+                    <ul>
+                        <li th:each="item : ${order.orderItems}"
+                            th:text="${item.product.name}">
+                        </li>
+                    </ul>
+                </td>
+
+                <td>
+                    <ul>
+                        <li th:each="item : ${order.orderItems}"
+                            th:text="${item.quantity}">
+                        </li>
+                    </ul>
+                </td>
+
+                <td>₹ <span th:text="${order.totalAmount}"></span></td>
+
+                <!-- FULL ADDRESS -->
+                <td>
+                    <div>
+                        <strong th:text="${order.user.fullName}"></strong><br>
+                        <span th:text="${order.user.address}"></span><br>
+
+                        <span th:text="${order.shippingAddress}"></span><br>
+
+                        <span>
+                            <span th:text="${order.user.city}"></span>,
+                            <span th:text="${order.user.state}"></span>
+                            -
+                            <span th:text="${order.user.pinCode}"></span>
+                        </span><br>
+
+                        <small>Ph: <span th:text="${order.user.phoneNumber}"></span></small>
+                    </div>
+                </td>
+
+                <td th:text="${order.status}"></td>
+
+                <td>
+                    <form th:action="@{'/orders/update-status/' + ${order.id}}" method="post" class="status-form">
+                        <select name="status" th:value="${order.status}">
+                            <option th:each="s : ${T(com.shop.entity.Order.OrderStatus).values()}"
+                                    th:value="${s}"
+                                    th:text="${s}"
+                                    th:selected="${s == order.status}">
+                            </option>
+                        </select>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+
+            </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign in - My App</title>
+
+    <!-- Global Site Styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* ISOLATED LOGIN PAGE STYLING */
+
+        :root {
+            --login-bg: #f4f6f9;
+            --login-card-bg: #ffffff;
+            --login-accent: #7C3AED;
+            --login-muted: #6b7280;
+            --login-radius: 12px;
+            --login-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        body.login-page {
+            margin: 0;
+            padding: 0;
+            background: var(--login-bg);
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+        }
+
+
+        /* Wrapper aligned with site layout */
+        .login-wrapper {
+            max-width: 1200px;
+            width: 92%;
+            margin: 120px auto 40px; /* space below header */
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Login card */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--login-card-bg);
+            border-radius: var(--login-radius);
+            padding: 2rem;
+            box-shadow: var(--login-shadow);
+        }
+
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #fff8, #ffffff33);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: var(--login-accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .login-title {
+            margin: 0 0 .45rem 0;
+            font-size: 1.25rem;
+            color: #111;
+        }
+
+        .login-lead {
+            color: var(--login-muted);
+            margin-bottom: 1.3rem;
+            font-size: .95rem;
+        }
+
+        form.login-form {
+            display: grid;
+            gap: .9rem;
+        }
+
+        .login-label {
+            font-size: .85rem;
+            color: var(--login-muted);
+            display: block;
+            margin-bottom: .35rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: .75rem .9rem;
+            border-radius: 10px;
+            border: 1px solid #e6e9ee;
+            background: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: .15s;
+        }
+
+        .login-input:focus {
+            border-color: var(--login-accent);
+            box-shadow: 0 6px 20px rgba(124,58,237,0.12);
+        }
+
+        .login-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .login-remember {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            color: var(--login-muted);
+            font-size: .9rem;
+        }
+
+        .login-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: .4rem;
+        }
+
+        .login-btn {
+            background: var(--login-accent);
+            color: #fff;
+            padding: .75rem 1rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            min-width: 120px;
+            box-shadow: 0 6px 18px rgba(124,58,237,0.18);
+        }
+
+        .login-btn:active { transform: translateY(1px); }
+
+        .login-muted-link {
+            color: var(--login-accent);
+            text-decoration: none;
+            font-size: .92rem;
+        }
+
+        .login-error {
+            color: #dc2626;
+            font-size: .9rem;
+            margin-top: .2rem;
+        }
+
+        .login-footer-note {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: .85rem;
+            color: var(--login-muted);
+        }
+
+        @media (max-width: 420px) {
+            .login-card { padding: 1.3rem; }
+            .login-wrapper { margin-top: 140px; }
+        }
+
+    </style>
+</head>
+
+<body class="login-page">
+
+<header>
+    <div th:replace="fragments :: userHeader"></div>
+
+</header>
+
+<!-- Properly aligned inside site container -->
+<div class="login-wrapper">
+
+    <main class="login-card" role="main">
+
+        <div class="login-brand">
+            <div class="login-logo">M</div>
+            <div>
+                <h2 class="login-title">Welcome back</h2>
+                <p class="login-lead">Sign in to access your account</p>
+            </div>
+        </div>
+
+        <form th:action="@{/login}" th:method="post" id="loginForm" class="login-form">
+
+            <div>
+                <label class="login-label">Username or Email</label>
+                <input class="login-input" type="text" id="username"
+                       name="username" th:value="${param.username}"
+                       placeholder="you@example.com" required>
+            </div>
+
+            <div>
+                <label class="login-label">Password</label>
+
+                <div style="position:relative">
+                    <input class="login-input" type="password" id="password"
+                           name="password" placeholder="Your password" required>
+
+                    <button type="button"
+                            id="togglePwd"
+                            style="position:absolute; right:8px; top:50%; transform:translateY(-50%);
+                                   background:none; border:none; color:var(--login-muted); cursor:pointer;">
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <div class="login-row">
+                <label class="login-remember">
+                    <input type="checkbox" name="remember-me"> Remember me
+                </label>
+
+                <a th:href="@{/forgot-password}" class="login-muted-link">Forgot password?</a>
+            </div>
+
+            <div th:if="${param.error}">
+                <p class="login-error">Invalid username or password.</p>
+            </div>
+
+            <div class="login-actions">
+                <button class="login-btn" type="submit">Sign in</button>
+                <a th:href="@{/register}" class="login-muted-link">Create account</a>
+            </div>
+
+            <p class="login-footer-note">
+                Or continue with <strong style="color:var(--login-accent)">single-click</strong> sign-in!
+            </p>
+
+        </form>
+
+    </main>
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+
+<script>
+    // Password show/hide
+    const pwd = document.getElementById("password");
+    const toggle = document.getElementById("togglePwd");
+
+    toggle.onclick = () => {
+        if (pwd.type === "password") {
+            pwd.type = "text";
+            toggle.textContent = "Hide";
+        } else {
+            pwd.type = "password";
+            toggle.textContent = "Show";
+        }
+    };
+</script>
+
+</body>
+</html>

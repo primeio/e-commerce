@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* -------- Safe isolated success page styles (no conflicts) -------- */
+
+        .order-success-page {
+            background: #f4f6f9;
+            margin: 0;
+            padding-top: 120px; /* space for header */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            min-height: 70vh;
+        }
+
+        .order-success-box {
+            background: #fff;
+            padding: 40px 30px;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .order-success-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: #22c55e;
+            margin-bottom: 15px;
+        }
+
+        .order-success-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #7C3AED;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .order-success-btn:hover {
+            background: #5b2bcf;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <div th:replace="fragments :: userHeader"></div>
+
+</header>
+
+<div class="order-success-page">
+
+    <div class="order-success-box">
+
+        <div class="success-icon">✔</div>
+
+        <h1 class="order-success-title">Your order has been placed successfully!</h1>
+
+        <a th:href="@{/cart}" class="order-success-btn">Back to Cart</a>
+
+    </div>
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

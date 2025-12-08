@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+
+
+    <style>
+        /* ISOLATED PROFILE PAGE STYLES */
+
+        body.profile-page {
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .profile-container {
+            width: 450px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+
+        .profile-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .profile-label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .profile-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .profile-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .profile-btn:hover {
+            background: #0056b3;
+        }
+
+        .profile-password-link {
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .profile-password-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+
+<body class="profile-page">
+
+<header>
+    <!-- Show USER header automatically if NOT ADMIN -->
+    <div th:replace="fragments :: userHeader"></div>
+
+    <!-- Show ADMIN header automatically if ADMIN -->
+    <div th:replace="fragments :: adminHeader"></div>
+</header>
+
+
+<div class="profile-container">
+    <h2 class="profile-title">Your Profile</h2>
+
+    <form th:action="@{/profile/update}" method="post" th:object="${user}">
+
+        <label class="profile-label">Full Name:</label>
+        <input class="profile-input" type="text" th:field="*{fullName}" required>
+
+        <label class="profile-label">Username:</label>
+        <input class="profile-input" type="text" th:field="*{username}" required>
+
+        <label class="profile-label">Email:</label>
+        <input class="profile-input" type="email" th:field="*{email}" required>
+
+        <label class="profile-label">Phone Number:</label>
+        <input class="profile-input" type="text" th:field="*{phoneNumber}" required>
+
+        <button class="profile-btn" type="submit">Save</button>
+    </form>
+
+    <a class="profile-password-link" href="/profile/change-password">Change Password</a>
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+
+</body>
+</html>

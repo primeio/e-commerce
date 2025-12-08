@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+
+    <!-- ==========================
+         USER HEADER (NON-ADMIN)
+    =========================== -->
+    <div class="user-header container header-inner"
+         sec:authorize="!hasRole('ADMIN')"
+         th:fragment="userHeader">
+
+        <div class="brand">
+            <h1>ShopNow</h1>
+        </div>
+
+        <!-- Search bar -->
+        <form class="search-bar" th:action="@{/user/dashboard}" method="get">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text"
+                       name="keyword"
+                       placeholder="Search for products..."
+                       th:value="${keyword}">
+            </div>
+
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <input type="hidden" name="page" value="0">
+        </form>
+        <nav class="nav-right">
+            <span>
+                <a sec:authorize="isAnonymous()" href="/login">Login</a>
+                <a sec:authorize="isAuthenticated()" href="/profile">Profile</a>
+            </span>
+
+            <a th:href="@{/orders}">Orders</a>
+            <a th:href="@{/cart}">Cart</a>
+        </nav>
+    </div>
+
+
+    <!-- USER CATEGORY BAR -->
+    <div class="user-category cat-nav"
+         sec:authorize="!hasRole('ADMIN')"
+         th:fragment="categories">
+
+        <div class="nav-links">
+            <a th:each="c : ${categories}"
+               th:text="${c.name}"
+               th:href="@{/user/dashboard(category=${c.name})}">
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- ==========================
+         ADMIN HEADER (ONLY ADMIN)
+    =========================== -->
+    <div class="admin-header-wrapper"
+         sec:authorize="hasRole('ADMIN')"
+         th:fragment="adminHeader">
+
+        <div class="admin-header-inner">
+            <div class="admin-brand">
+                <h3>🛍️ ShopNow Admin</h3>
+            </div>
+
+            <nav class="admin-nav">
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+    </div>
+
+</header>
+
+
+<footer class="footer" role="contentinfo" th:fragment="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">ShopNow</div>
+            <p>Your one-stop shop for quality products at the best prices.</p>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color:#f8d210;">Quick Links</h3>
+            <a href="#">Home</a>
+            <a href="#">Products</a>
+            <a href="#">Categories</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color:#f8d210;">Contact</h3>
+            <div>Email: <a href="mailto:support@shopnow.com">support@shopnow.com</a></div>
+            <div>Phone: +91 75178 28446</div>
+            <div>Address: Kolhapur, Maharashtra, India</div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">© 2025 ShopNow. All rights reserved.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - List Category</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>/* Main container */
+        .container {
+            flex: 1;
+            padding: 30px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        /* Table styling */
+        a.add-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.add-btn:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        table .img-cell {
+    width: 80px;          /* fixed width for the image cell */
+    text-align: center;   /* center the image */
+}
+
+table .img-cell img {
+    width: 60px;          /* image width */
+    height: 60px;         /* image height */
+    object-fit: cover;    /* maintain aspect ratio and cover the box */
+    border-radius: 5px;   /* slightly rounded corners */
+    border: 1px solid #ccc; /* optional border */
+}
+
+        td a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+
+
+  </style>
+</head>
+<body>
+<!-- Navbar -->
+<header>
+  <div th:replace="fragments :: adminHeader"></div>
+</header>
+
+
+<!-- Main content -->
+
+<!-- Main content -->
+<div class="container">
+  <h2>Category Management</h2>
+  <a class="add-btn" th:href="@{/categories/create}">Add Category</a>
+  <table>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+
+      <th>Actions</th>
+    </tr>
+    <tr th:each="category : ${categories}">
+      <td th:text="${category.id}"></td>
+      <td th:text="${category.name}"></td>
+
+
+      <td>
+        <a th:href="@{/categories/edit/{id}(id=${category.id})}">Edit</a>
+        <a th:href="@{/categories/delete/{id}(id=${category.id})}">Delete</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- Footer -->
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>
+
+<!-- Footer -->
+
