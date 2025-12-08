@@ -29,6 +29,18 @@
         .cart-summary button { background: #28a745; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; }
         .cart-summary button:hover { background: #1e7e34; }
 
+     .update {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.update:hover {
+    background: #0056b3;
+}
 
 
         /* ---------- Responsive ---------- */
@@ -85,7 +97,9 @@
                  th:value="${item.quantity}"
                  style="width:70px"/>
 
-          <button class="btn" type="submit">Update</button>
+          <button class="update" type="submit">Update</button>
+
+
         </form>
       </td>
 
